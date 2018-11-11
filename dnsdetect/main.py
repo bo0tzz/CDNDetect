@@ -1,11 +1,13 @@
-from aiohttp import web
 import os
+
+from aiohttp import web
 
 listen_port = int(os.getenv("LISTEN_PORT", 8080))
 
 
 async def detect_cdns(request):
-    return web.Response(text="Hello World")
+    json = await request.json()
+    return web.json_response(json)
 
 
 def setup_app():
