@@ -1,23 +1,18 @@
 from dnsdetect import detect
+from parameterized import parameterized
 import unittest
 
 
 class TestDetect(unittest.TestCase):
 
-    def test_funnygames_at(self):
-        base_url = 'assets.funnygames.at'
+    @parameterized.expand([
+        ['assets.funnygames.at', 'd.gcdn.co.'],
+        ['edition.i.cdn.cnn.com', 'turner-tls.map.fastly.net.'],
+        ['cdn.cnn.com', 'e12596.dscj.akamaiedge.net.']
+    ])
+    def test_cname_chain(self, base_url, expected):
         root_cname = detect.find_root_cname(base_url)
-        self.assertEqual('d.gcdn.co.', root_cname)
-
-    def test_edition_cnn_com(self):
-        base_url = 'edition.i.cdn.cnn.com'
-        root_cname = detect.find_root_cname(base_url)
-        self.assertEqual('turner-tls.map.fastly.net.', root_cname)
-
-    def test_cdn_cnn_com(self):
-        base_url = 'cdn.cnn.com'
-        root_cname = detect.find_root_cname(base_url)
-        self.assertEqual('e12596.dscj.akamaiedge.net.', root_cname)
+        self.assertEqual(expected, root_cname)
 
 
 if __name__ == '__main__':
