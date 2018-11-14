@@ -6,7 +6,7 @@ from aiohttp.test_utils import AioHTTPTestCase, unittest_run_loop
 import dnsdetect.main
 
 
-class TestCase(AioHTTPTestCase):
+class TestMain(AioHTTPTestCase):
 
     async def get_application(self):
         return dnsdetect.main.setup_app()
