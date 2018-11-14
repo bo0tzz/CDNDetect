@@ -14,6 +14,13 @@ class TestDetect(unittest.TestCase):
         root_cname = detect.find_root_cname(base_url)
         self.assertEqual(expected, root_cname)
 
+    @parameterized.expand([
+        ['54.230.129.171', 'server-54-230-129-171.ams50.r.cloudfront.net']  # TODO: Find more relevant test cases
+    ])
+    def test_reverse_dns(self, ip, expected):
+        url = detect.reverse_dns(ip)
+        self.assertEqual(expected, url)
+
 
 if __name__ == '__main__':
     unittest.main()
