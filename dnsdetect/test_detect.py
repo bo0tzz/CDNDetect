@@ -21,6 +21,18 @@ class TestDetect(unittest.TestCase):
         url = detect.reverse_dns(ip)
         self.assertEqual(expected, url)
 
+    @parameterized.expand([
+        ['www.funnygames.at', True],
+        ['static.ah.nl', True],
+        ['images.nrc.nl', True],
+        ['www.cloudflare.com', True],
+        ['www.warpcache.com', False],
+        ['www.google.com', False],
+        ['www.tweakers.net', False]
+    ])
+    def test_detect_cloudflare(self, url, is_cloudflare):
+        res = detect.detect_cloudflare(url)
+        self.assertEqual(is_cloudflare, res)
 
 if __name__ == '__main__':
     unittest.main()
