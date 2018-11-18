@@ -1,3 +1,4 @@
 aiohttp
 dnspython
 parameterized
+requests
