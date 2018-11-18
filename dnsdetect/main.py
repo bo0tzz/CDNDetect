@@ -4,6 +4,7 @@ import os
 from aiohttp import web
 
 import chrome
+import detect
 
 
 class Main:
@@ -12,14 +13,18 @@ class Main:
         self.listen_port = int(os.getenv("LISTEN_PORT", 8080))
         self.browser = None
         self.app = None
+        self.detect = detect.Detect()
 
     async def detect_cdns(self, request):
         request_json = await request.json()
         url = request_json['url']
+
+        # Find the resources on the webpage
         resp = await self.browser.find_resources(url)
-        # TODO: filter for same domain
+
+
         # TODO: do actual CDN detection
-        return web.json_response(list(resp))
+        return web.json_response(resp)
 
     async def setup_app(self):
 
