@@ -16,15 +16,19 @@ class Main:
         self.detect = detect.Detect()
 
     async def detect_cdns(self, request):
+        results = {}
+
         request_json = await request.json()
         url = request_json['url']
 
         # Find the resources on the webpage
         resp = await self.browser.find_resources(url)
 
+        for domain in resp:
+            cdn = self.detect.find_cdn(domain)
+            results[domain] = cdn
 
-        # TODO: do actual CDN detection
-        return web.json_response(resp)
+        return web.json_response(results)
 
     async def setup_app(self):
 

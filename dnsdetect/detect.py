@@ -1,3 +1,4 @@
+import json
 import socket
 import requests
 
@@ -9,11 +10,16 @@ import ipaddress
 class Detect:
 
     def __init__(self):
+        # Load CDN domains
+        with open('cdn.json') as f:
+            self.cdns = json.load(f)
+
+        # Load cloudflare ranges
         self.cloudflare_ranges = []
         r = requests.get('https://cloudflare.com/ips-v4')
-        for l in r.text.split('\n'):
-            if l != '':
-                self.cloudflare_ranges.append(l)
+        for line in r.text.split('\n'):
+            if line != '':
+                self.cloudflare_ranges.append(line)
 
     def detect_cloudflare(self, url: str):
         # Find the IP for this url
@@ -44,4 +50,15 @@ class Detect:
             return ''
 
     def find_cdn(self, url: str):
-        return None
+        cname = self.find_root_cname(url)
+        # If there is no cname chain, let's see if the resource is on cloudflare
+        if (cname == url) and (self.detect_cloudflare(url)):
+            return 'Cloudflare'
+
+        # See if the root cname is in our list of CDN domains
+        for domain, cdn in self.cdns.items():
+            if cname.endswith(domain):
+                return cdn
+
+        return 'No CDN'
+
