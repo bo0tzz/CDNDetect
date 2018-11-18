@@ -23,7 +23,7 @@ class Detect:
 
     def detect_cloudflare(self, url: str):
         # Find the IP for this url
-        ip = resolver.query(url, 'A')[0].to_text()
+        ip = self.ip_from_url(url)
         is_cloudflare = False
         ip_addr = ipaddress.ip_address(ip)
 
@@ -32,6 +32,10 @@ class Detect:
             if ip_addr in ipaddress.ip_network(r):
                 is_cloudflare = True
         return is_cloudflare
+
+    def ip_from_url(self, url):
+        ip = resolver.query(url, 'A')[0].to_text()
+        return ip
 
     def find_root_cname(self, url: str):
         loop = True
@@ -52,13 +56,21 @@ class Detect:
     def find_cdn(self, url: str):
         cname = self.find_root_cname(url)
         # If there is no cname chain, let's see if the resource is on cloudflare
-        if (cname == url) and (self.detect_cloudflare(url)):
-            return 'Cloudflare'
+        if cname == url:
+            if self.detect_cloudflare(url):
+                return 'Cloudflare'
+            else:
+                ip = self.ip_from_url(url)
+                cname = self.reverse_dns(ip)
 
         # See if the root cname is in our list of CDN domains
         for domain, cdn in self.cdns.items():
-            if cname.endswith(domain):
+            if self.compare_domains(cname, domain):  # TODO: How exactly to handle trailing periods
                 return cdn
 
-        return 'No CDN'
+        return ''
 
+    def compare_domains(self, cname, domain):
+        cname = cname.rstrip('.')
+        domain = domain.rstrip('.')
+        return cname.endswith(domain)

@@ -26,7 +26,8 @@ class Main:
 
         for domain in resp:
             cdn = self.detect.find_cdn(domain)
-            results[domain] = cdn
+            if cdn != '':
+                results[domain] = cdn
 
         return web.json_response(results)
 

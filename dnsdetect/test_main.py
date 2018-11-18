@@ -10,7 +10,8 @@ class TestMain(AioHTTPTestCase):
 
     async def get_application(self):
         main = dnsdetect.main.Main()
-        return main.setup_app()
+        await main.setup_app()
+        return main.app
 
     @unittest_run_loop
     async def test_funnygames_at(self):
@@ -18,6 +19,7 @@ class TestMain(AioHTTPTestCase):
         resp = await self.client.request("GET", "/", data=(json.dumps(rq)))
         assert resp.status == 200
         resp_json = await resp.json()
+        print(resp_json)
         assert len(resp_json) == 2
         assert resp_json['www.funnygames.at'] == 'Cloudflare'
         # The example in the email specifies OptimiCDN, but this seems to be a multi-CDN.
@@ -30,6 +32,7 @@ class TestMain(AioHTTPTestCase):
         resp = await self.client.request("GET", "/", data=(json.dumps(rq)))
         assert resp.status == 200
         resp_json = await resp.json()
+        print(resp_json)
         assert len(resp_json) == 0  # No CDN used
 
     @unittest_run_loop
@@ -38,6 +41,7 @@ class TestMain(AioHTTPTestCase):
         resp = await self.client.request("GET", "/", data=(json.dumps(rq)))
         assert resp.status == 200
         resp_json = await resp.json()
+        print(resp_json)
         assert len(resp_json) == 2
         assert resp_json['edition.i.cdn.cnn.com'] == 'Fastly'
         assert resp_json['cdn.cnn.com'] == 'Akamai'
@@ -48,6 +52,7 @@ class TestMain(AioHTTPTestCase):
         resp = await self.client.request("GET", "/", data=(json.dumps(rq)))
         assert resp.status == 200
         resp_json = await resp.json()
+        print(resp_json)
         assert len(resp_json) == 1
         assert resp_json['www.thuisbezorgd.nl'] == 'Fastly'
 
@@ -57,6 +62,7 @@ class TestMain(AioHTTPTestCase):
         resp = await self.client.request("GET", "/", data=(json.dumps(rq)))
         assert resp.status == 200
         resp_json = await resp.json()
+        print(resp_json)
         assert len(resp_json) == 2
         assert resp_json['www.dell.com'] == 'Akamai'
         assert resp_json['i.dell.com'] == 'Akamai'
@@ -67,6 +73,7 @@ class TestMain(AioHTTPTestCase):
         resp = await self.client.request("GET", "/", data=(json.dumps(rq)))
         assert resp.status == 200
         resp_json = await resp.json()
+        print(resp_json)
         assert len(resp_json) == 1
         assert resp_json['www.youtube.com'] == 'Google'
 
@@ -76,6 +83,7 @@ class TestMain(AioHTTPTestCase):
         resp = await self.client.request("GET", "/", data=(json.dumps(rq)))
         assert resp.status == 200
         resp_json = await resp.json()
+        print(resp_json)
         assert len(resp_json) == 1
         assert resp_json['static.ah.nl'] == 'Cloudflare'
 
@@ -85,6 +93,7 @@ class TestMain(AioHTTPTestCase):
         resp = await self.client.request("GET", "/", data=(json.dumps(rq)))
         assert resp.status == 200
         resp_json = await resp.json()
+        print(resp_json)
         assert len(resp_json) == 4
         assert resp_json['static.buienradar.nl'] == 'Akamai'
         assert resp_json['api.buienradar.nl'] == 'Akamai'
@@ -97,6 +106,7 @@ class TestMain(AioHTTPTestCase):
         resp = await self.client.request("GET", "/", data=(json.dumps(rq)))
         assert resp.status == 200
         resp_json = await resp.json()
+        print(resp_json)
         assert len(resp_json) == 3
         assert resp_json['image.coolblue.nl'] == 'Amazon Cloudfront'
         assert resp_json['assets.coolblue.nl'] == 'Amazon Cloudfront'
@@ -108,6 +118,7 @@ class TestMain(AioHTTPTestCase):
         resp = await self.client.request("GET", "/", data=(json.dumps(rq)))
         assert resp.status == 200
         resp_json = await resp.json()
+        print(resp_json)
         assert len(resp_json) == 1
         assert resp_json['images.nrc.nl'] == 'Cloudflare'
 
