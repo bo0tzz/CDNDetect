@@ -5,6 +5,7 @@ from dns import resolver
 from dns.resolver import NoAnswer
 import ipaddress
 
+
 class Detect:
 
     def __init__(self):

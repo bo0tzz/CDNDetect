@@ -2,3 +2,4 @@ aiohttp
 dnspython
 parameterized
 requests
+pyppeteer
