@@ -1,25 +1,36 @@
+import asyncio
 import os
 
 from aiohttp import web
 
-listen_port = int(os.getenv("LISTEN_PORT", 8080))
+import chrome
 
 
-async def detect_cdns(request):
-    json = await request.json()
-    return web.json_response(json)
+class Main:
 
+    def __init__(self):
+        self.listen_port = int(os.getenv("LISTEN_PORT", 8080))
+        self.browser = None
+        self.app = None
 
-def setup_app():
-    app = web.Application()
-    app.router.add_get('/', detect_cdns)
-    return app
+    async def detect_cdns(self, request):
+        request_json = await request.json()
+        url = request_json['url']
+        resp = await self.browser.find_resources(url)
+        # TODO: filter for same domain
+        # TODO: do actual CDN detection
+        return web.json_response(list(resp))
 
+    async def setup_app(self):
 
-def run_app(port):
-    app = setup_app()
-    web.run_app(app, port=port)
+        self.browser = chrome.Chrome()
+        await self.browser.setup()
+
+        self.app = web.Application()
+        self.app.router.add_get('/', self.detect_cdns)
 
 
 if __name__ == "__main__":
-    run_app(listen_port)
+    m = Main()
+    asyncio.get_event_loop().run_until_complete(m.setup_app())
+    web.run_app(m.app, port=m.listen_port)
