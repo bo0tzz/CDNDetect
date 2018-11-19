@@ -120,7 +120,18 @@ class TestMain(AioHTTPTestCase):
         resp_json = await resp.json()
         print(resp_json)
         assert len(resp_json) == 1
-        assert resp_json['images.nrc.nl'] == 'Cloudflare'
+        assert resp_json['images.nrc.nl'] == 'Cloudflare'  # It seems like this test case is wrong
+
+    @unittest_run_loop
+    async def test_digitalocean_com(self):
+        rq = {'url': 'https://www.digitalocean.com'}
+        resp = await self.client.request("GET", "/", data=(json.dumps(rq)))
+        assert resp.status == 200
+        resp_json = await resp.json()
+        print(resp_json)
+        assert len(resp_json) == 2
+        assert resp_json['www.digitalocean.com'] == 'Cloudflare'
+        assert resp_json['assets.digitalocean.com'] == 'Fastly'
 
 
 if __name__ == '__main__':

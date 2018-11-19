@@ -62,6 +62,8 @@ class Detect:
             else:
                 ip = self.ip_from_url(url)
                 cname = self.reverse_dns(ip)
+                if cname == '':
+                    return ''
 
         # See if the root cname is in our list of CDN domains
         for domain, cdn in self.cdns.items():
@@ -70,7 +72,12 @@ class Detect:
 
         return ''
 
-    def compare_domains(self, cname, domain):
-        cname = cname.rstrip('.')
-        domain = domain.rstrip('.')
+    def compare_domains(self, cname: str, domain: str):
+        if cname.endswith('.'):
+            cname = cname.rstrip('.')
+
+        if domain.endswith('.'):  # If our cdn domain ends in '.', that cdn uses most TLDs
+            domain = domain.rstrip('.')
+            cname = cname[0: cname.rindex('.')]  # So we snip the TLD off our url before comparing
+
         return cname.endswith(domain)
