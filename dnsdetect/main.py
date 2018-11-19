@@ -3,7 +3,7 @@ import os
 
 from aiohttp import web
 
-from .chrome import Chrome
+from .browser import Browser
 from .detect import Detect
 
 
@@ -21,6 +21,8 @@ class Main:
         request_json = await request.json()
         url = request_json['url']
 
+
+
         # Find the resources on the webpage
         resp = await self.browser.find_resources(url)
 
@@ -33,7 +35,7 @@ class Main:
 
     async def setup_app(self):
 
-        self.browser = Chrome()
+        self.browser = Browser()
         await self.browser.setup()
 
         self.app = web.Application()
