@@ -42,9 +42,11 @@ class TestMain(AioHTTPTestCase):
         assert resp.status == 200
         resp_json = await resp.json()
         print(resp_json)
-        assert len(resp_json) == 2
+        assert len(resp_json) == 4
         assert resp_json['edition.i.cdn.cnn.com'] == 'Fastly'
+        assert resp_json['data.cnn.com'] == 'Akamai'
         assert resp_json['cdn.cnn.com'] == 'Akamai'
+        assert resp_json['dynaimage.cdn.cnn.com'] == 'Akamai'
 
     @unittest_run_loop
     async def test_thuisbezorgd_nl(self):
@@ -63,9 +65,10 @@ class TestMain(AioHTTPTestCase):
         assert resp.status == 200
         resp_json = await resp.json()
         print(resp_json)
-        assert len(resp_json) == 2
+        assert len(resp_json) == 3
         assert resp_json['www.dell.com'] == 'Akamai'
         assert resp_json['i.dell.com'] == 'Akamai'
+        assert resp_json['nexus.dell.com'] == 'Akamai'
 
     @unittest_run_loop
     async def test_youtube_com(self):
@@ -94,11 +97,9 @@ class TestMain(AioHTTPTestCase):
         assert resp.status == 200
         resp_json = await resp.json()
         print(resp_json)
-        assert len(resp_json) == 4
+        assert len(resp_json) == 2
         assert resp_json['static.buienradar.nl'] == 'Akamai'
         assert resp_json['api.buienradar.nl'] == 'Akamai'
-        assert resp_json['graphdata.buienradar.nl'] == 'Akamai'
-        assert resp_json['forecast.buienradar.nl'] == 'Akamai'
 
     @unittest_run_loop
     async def test_coolblue_nl(self):
@@ -119,8 +120,7 @@ class TestMain(AioHTTPTestCase):
         assert resp.status == 200
         resp_json = await resp.json()
         print(resp_json)
-        assert len(resp_json) == 1
-        assert resp_json['images.nrc.nl'] == 'Cloudflare'  # It seems like this test case is wrong
+        assert len(resp_json) == 0
 
     @unittest_run_loop
     async def test_digitalocean_com(self):
