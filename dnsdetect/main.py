@@ -3,8 +3,8 @@ import os
 
 from aiohttp import web
 
-import chrome
-import detect
+from .chrome import Chrome
+from .detect import Detect
 
 
 class Main:
@@ -13,7 +13,7 @@ class Main:
         self.listen_port = int(os.getenv("LISTEN_PORT", 8080))
         self.browser = None
         self.app = None
-        self.detect = detect.Detect()
+        self.detect = Detect()
 
     async def detect_cdns(self, request):
         results = {}
@@ -33,7 +33,7 @@ class Main:
 
     async def setup_app(self):
 
-        self.browser = chrome.Chrome()
+        self.browser = Chrome()
         await self.browser.setup()
 
         self.app = web.Application()

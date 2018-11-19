@@ -1,7 +1,7 @@
 from pyppeteer import launch
 from urllib import parse
 
-from page_event_handler import PageEventHandler
+from .page_event_handler import PageEventHandler
 
 
 class Chrome:
