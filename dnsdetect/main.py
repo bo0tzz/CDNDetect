@@ -1,16 +1,17 @@
 import asyncio
 import os
+import sys
 
 from aiohttp import web
 
-from .browser import Browser
-from .detect import Detect
+from dnsdetect.browser import Browser
+from dnsdetect.detect import Detect
 
 
 class Main:
 
-    def __init__(self):
-        self.listen_port = int(os.getenv("LISTEN_PORT", 8080))
+    def __init__(self, listen_port):
+        self.listen_port = listen_port
         self.browser = None
         self.app = None
         self.detect = Detect()
@@ -20,8 +21,6 @@ class Main:
 
         request_json = await request.json()
         url = request_json['url']
-
-
 
         # Find the resources on the webpage
         resp = await self.browser.find_resources(url)
@@ -43,6 +42,10 @@ class Main:
 
 
 if __name__ == "__main__":
-    m = Main()
+    port = int(sys.argv[1]) \
+        if len(sys.argv) > 1 \
+        else int(os.getenv("LISTEN_PORT", 8080))
+
+    m = Main(port)
     asyncio.get_event_loop().run_until_complete(m.setup_app())
     web.run_app(m.app, port=m.listen_port)

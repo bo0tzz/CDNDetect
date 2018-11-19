@@ -9,7 +9,7 @@ import dnsdetect.main
 class TestMain(AioHTTPTestCase):
 
     async def get_application(self):
-        main = dnsdetect.main.Main()
+        main = dnsdetect.main.Main(8080)
         await main.setup_app()
         return main.app
 

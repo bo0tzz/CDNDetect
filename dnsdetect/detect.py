@@ -20,8 +20,7 @@ def compare_domains(cname: str, domain: str):
 
 def reverse_dns(ip: str):
     try:
-        url = socket.gethostbyaddr(ip)[0]
-        return url
+        return socket.gethostbyaddr(ip)[0]
     except socket.herror:  # No result
         return ''
 
