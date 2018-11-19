@@ -18,7 +18,7 @@ class TestDetect(unittest.TestCase):
         self.assertEqual(expected, root_cname)
 
     @parameterized.expand([
-        ['54.230.129.171', 'server-54-230-129-171.ams50.r.cloudfront.net']  # TODO: Find more relevant test cases
+        ['54.230.129.171', 'server-54-230-129-171.ams50.r.cloudfront.net']
     ])
     def test_reverse_dns(self, ip, expected):
         url = detect.reverse_dns(ip)

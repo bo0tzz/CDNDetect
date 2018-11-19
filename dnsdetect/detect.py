@@ -81,7 +81,7 @@ class Detect:
 
         # See if the root cname is in our list of CDN domains
         for domain, cdn in self.cdns.items():
-            if compare_domains(cname, domain):  # TODO: How exactly to handle trailing periods
+            if compare_domains(cname, domain):
                 return cdn
 
         return ''
